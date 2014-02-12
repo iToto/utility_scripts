@@ -12,7 +12,7 @@ numChildren.to_i.times do |i|
             res = Net::HTTP::start(url.host, url.port) {|http|
                 http.request(req)
             }
-            puts "Child #{i} got coupon #{res.body}"
+            puts "Child #{i} got response #{res.body}"
         end while res.code == "200"
         puts "Process #{i} ended"
         exit
