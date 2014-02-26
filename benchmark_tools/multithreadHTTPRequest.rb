@@ -1,7 +1,6 @@
 require 'net/http'
 require 'pp'
 
-email_list_file = 'emails.csv'
 url_list_file = 'urls.txt'
 
 
@@ -18,15 +17,10 @@ unless ARGV[1]
 end
 
 num_children = ARGV[0]
-url_index = ARGV[1]
+url_index    = ARGV[1]
 
 unless File.exists?(url_list_file)
     puts "Could not find url file #{url_list_file}"
-    exit
-end
-
-unless File.exists?(email_list_file)
-    puts "Could not find email file #{email_list_file}"
     exit
 end
 
@@ -41,17 +35,6 @@ File.open('urls.txt','r').each_line do |line|
     urls.push(line)
 end
 
-emails = Array.new()
-
-File.open(email_list_file,'r').each_line do |line|
-    line = line.strip.split ','
-    email = {
-        :messageKey => line.first.to_s,
-        :email => line.last.to_s
-    }
-    emails.push(email)
-end
-
 num_children.to_i.times do |i|
     pid = fork do
         log_file.puts "Process #{i} started with pid: #{pid}"
@@ -59,8 +42,6 @@ num_children.to_i.times do |i|
         current_request = 0
 
         begin
-            email = emails[0][:email]
-            mkey  = emails[0][:messageKey]
             url = URI.parse(urls[url_index.to_i])
             log_file.puts "Child #{i} [#{pid}] sending to server: #{urls[url_index.to_i]}"
             req = Net::HTTP::Get.new(url.to_s)
